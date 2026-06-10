@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumina — Doação Confirmada</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23E5501E'/><circle cx='16' cy='16' r='10' fill='none' stroke='%23FFFFFF' stroke-width='2'/></svg>" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root { --cream: #F7F3EE; --orange: #E5501E; --black: #181614; --ink: #2B2622; --muted: #7A7168; --line: #DDD7CF; --white: #FFFFFF; --serif: 'Cormorant Garamond', serif; --sans: 'DM Sans', sans-serif; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--sans); background: var(--cream); color: var(--ink); line-height: 1.6; display: flex; align-items: center; justify-content: center; min-height: 100vh; text-align: center; }
+    .success-container { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 56px 40px; width: 100%; max-width: 480px; box-shadow: 0 4px 24px rgba(24, 22, 20, 0.02); }
+    .success-icon { width: 64px; height: 64px; background: #E8F5E9; color: #2E7D32; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; }
+    .success-title { font-family: var(--serif); font-size: 32px; color: var(--black); margin-bottom: 12px; }
+    .btn-submit { display: inline-block; padding: 14px 28px; border-radius: 8px; font-size: 15px; font-weight: 500; background: var(--orange); color: var(--white); text-decoration: none; margin-top: 24px; transition: background .2s; }
+    .btn-submit:hover { background: #B83E16; }
+  </style>
+</head>
+<body>
+  <div class="success-container">
+    <div class="success-icon">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    </div>
+    <h1 class="success-title">Apoio confirmado!</h1>
+    <p style="font-size: 15px; color: var(--muted);">Obrigado! O seu apoio financeiro vai ajudar diretamente a Dra. Ana Maria Silva a bater a meta da pesquisa.</p>
+    <a href="artigo.html" class="btn-submit">Voltar para o Artigo</a>
+  </div>
+</body>
+</html>

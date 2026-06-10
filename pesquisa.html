@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pesquisas — Lumina</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23E5501E'/><circle cx='16' cy='16' r='10' fill='none' stroke='%23FFFFFF' stroke-width='2'/></svg>" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --cream:      #F7F3EE;
+      --cream-dark: #EDE7DE;
+      --orange:     #E5501E;
+      --orange-dim: #B83E16;
+      --black:      #181614;
+      --ink:        #2B2622;
+      --muted:      #7A7168;
+      --line:       #DDD7CF;
+      --white:      #FFFFFF;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans:  'DM Sans', system-ui, sans-serif;
+      --max-w: 1200px;
+      --pad-x: clamp(24px, 5vw, 80px);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--sans);
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; font-family: var(--sans); border: none; background: none; }
+
+    .container {
+      width: 100%;
+      max-width: var(--max-w);
+      margin-inline: auto;
+      padding-inline: var(--pad-x);
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 2px;
+      background: var(--orange);
+      color: var(--white);
+    }
+    .tag-outline {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(247,243,238,.96);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 var(--line);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-mark {
+      width: 30px; height: 30px;
+      background: var(--orange);
+      border-radius: 50%;
+      position: relative;
+    }
+    .logo-mark::after {
+      content: '';
+      position: absolute;
+      inset: 5px;
+      border: 2px solid var(--white);
+      border-radius: 50%;
+    }
+    .logo-name {
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--black);
+    }
+    .nav { display: flex; align-items: center; gap: 28px; }
+    .nav-links { display: flex; gap: 24px; list-style: none; }
+    .nav-links a { font-size: 14px; color: var(--muted); transition: color .2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+    .btn-nav {
+      font-size: 13px; font-weight: 500;
+      padding: 8px 18px; border-radius: 6px;
+      transition: background .2s, color .2s;
+    }
+    .btn-nav-ghost {
+      border: 1px solid var(--line); color: var(--ink);
+    }
+    .btn-nav-ghost:hover { background: var(--cream-dark); }
+    .btn-nav-fill { background: var(--orange); color: var(--white); }
+    .btn-nav-fill:hover { background: var(--orange-dim); }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      padding-block: 56px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .page-header-inner {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding-bottom: 32px;
+      gap: 32px;
+    }
+    .page-eyebrow {
+      font-size: 12px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--orange);
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    .page-title {
+      font-family: var(--serif);
+      font-size: clamp(30px, 4vw, 48px);
+      font-weight: 300;
+      line-height: 1.1;
+    }
+    .page-sub {
+      font-size: 15px;
+      color: var(--muted);
+      margin-top: 8px;
+      max-width: 480px;
+    }
+    .result-count {
+      font-size: 13px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .result-count strong { color: var(--ink); font-weight: 500; }
+
+    /* Search bar in page header */
+    .search-bar {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      overflow: hidden;
+      margin-top: 24px;
+    }
+    .search-bar-input {
+      flex: 1;
+      border: none; outline: none;
+      font-family: var(--sans);
+      font-size: 14px;
+      color: var(--ink);
+      padding: 11px 16px;
+      background: transparent;
+    }
+    .search-bar-input::placeholder { color: var(--muted); }
+    .search-bar-btn {
+      display: flex; align-items: center; gap: 7px;
+      padding: 10px 18px;
+      background: var(--orange);
+      color: var(--white);
+      font-size: 13px; font-weight: 500;
+      border-left: 1px solid var(--orange);
+      transition: background .2s;
+    }
+    .search-bar-btn:hover { background: var(--orange-dim); }
+    .search-bar-divider {
+      width: 1px; height: 22px;
+      background: var(--line);
+    }
+    .search-bar-adv {
+      padding: 0 16px;
+      font-size: 13px;
+      color: var(--muted);
+      white-space: nowrap;
+      transition: color .15s;
+    }
+    .search-bar-adv:hover { color: var(--orange); }
+
+    /* ── LAYOUT ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 40px;
+      padding-block: 40px 80px;
+      align-items: start;
+    }
+
+    /* ── FILTERS SIDEBAR ── */
+    .sidebar {
+        position: sticky;
+        top: 80px;
+
+        background: linear-gradient(
+          180deg,
+          #2B2622 0%,
+          #221D1A 100%
+        );
+
+        border: 1px solid rgba(255,255,255,.04);
+
+        border-radius: 18px;
+
+        padding: 26px 24px;
+
+        box-shadow:
+          0 10px 40px rgba(0,0,0,.10),
+          inset 0 1px 0 rgba(255,255,255,.03);
+    }
+    .filter-block {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 24px;
+      margin-bottom: 24px;
+    }
+    .filter-block:last-child { border-bottom: none; margin-bottom: 0; }
+    .filter-title {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ink);
+      margin-bottom: 14px;
+      color: rgba(255,255,255,.92);
+    }
+    .filter-options {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      color: rgba(255,255,255,.58);
+    }
+    .filter-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+    .filter-option input[type="checkbox"] {
+      appearance: none;
+      width: 16px; height: 16px;
+      border: 1.5px solid var(--line);
+      border-radius: 3px;
+      flex-shrink: 0;
+      cursor: pointer;
+      position: relative;
+      transition: border-color .15s, background .15s;
+    }
+    .filter-option input:checked {
+      background: var(--orange);
+      border-color: var(--orange);
+    }
+    .filter-option input:checked::after {
+      content: '';
+      position: absolute;
+      left: 4px; top: 1.5px;
+      width: 5px; height: 9px;
+      border: 2px solid var(--white);
+      border-top: none; border-left: none;
+      transform: rotate(45deg);
+    }
+    .filter-option label {
+      font-size: 13.5px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color .15s;
+    }
+    .filter-count {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--line);
+      background: linear-gradient(
+          180deg,
+          #2B2622 0%,
+          #221D1A 100%
+        );
+      padding: 1px 7px;
+      border-radius: 10px;
+    }
+
+    .filter-radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .filter-radio {
+      display: flex; align-items: center; gap: 10px; cursor: pointer;
+    }
+    .filter-radio input[type="radio"] {
+      appearance: none;
+      width: 16px; height: 16px;
+      border: 1.5px solid var(--line);
+      border-radius: 50%;
+      cursor: pointer;
+      position: relative;
+      transition: border-color .15s;
+    }
+    .filter-radio input:checked { border-color: var(--orange); }
+    .filter-radio input:checked::after {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      background: var(--orange);
+      border-radius: 50%;
+    }
+    .filter-radio label { font-size: 13.5px; color: var(--muted); cursor: pointer; }
+
+    .filter-range {
+      margin-top: 4px;
+    }
+    .filter-range input[type="range"] {
+      width: 100%;
+      accent-color: var(--orange);
+    }
+    .filter-range-labels {
+      display: flex; justify-content: space-between;
+      font-size: 11px; color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .filter-clear {
+      font-size: 12px;
+      color: var(--orange);
+      font-weight: 500;
+      padding: 0;
+      transition: opacity .15s;
+    }
+    .filter-clear:hover { opacity: .7; }
+
+    /* ── RESULTS AREA ── */
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .sort-select {
+      font-family: var(--sans);
+      font-size: 13px;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      background: var(--white);
+      padding: 7px 28px 7px 10px;
+      border-radius: 6px;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237A7168'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .active-filters {
+      display: flex; align-items: center; gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .active-filter-chip {
+      display: flex; align-items: center; gap: 6px;
+      padding: 4px 10px 4px 12px;
+      background: var(--cream-dark);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--ink);
+    }
+    .active-filter-chip button {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1;
+      transition: color .15s;
+    }
+    .active-filter-chip button:hover { color: var(--orange); }
+
+    /* ── RESEARCH LIST ITEMS ── */
+    .research-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .research-item {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 24px;
+
+        padding: 26px;
+
+        background:
+          linear-gradient(
+            180deg,
+            rgba(255,255,255,.72),
+            rgba(247,243,238,.92)
+          );
+
+        border: 2px solid rgba(43,38,34,.20);
+
+        border-radius: 20px;
+
+        backdrop-filter: blur(10px);
+
+        box-shadow:
+          0 1px 0 rgba(255,255,255,.65) inset,
+          0 10px 30px rgba(0,0,0,.035);
+
+        transition:
+          transform .28s cubic-bezier(.22,1,.36,1),
+          box-shadow .28s ease,
+          border-color .28s ease,
+          background .28s ease;
+
+        cursor: pointer;
+    }
+    .research-item:hover .item-title { color: var(--orange); }
+    .research-item:hover {
+        transform: translateY(-6px);
+
+        box-shadow:
+          0 1px 0 rgba(255,255,255,.7) inset,
+          0 18px 50px rgba(0,0,0,.08);
+
+        border-color: rgba(229,80,30,.14);
+    }
+    
+    .item-meta-top {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .item-status {
+      font-size: 11px; font-weight: 500;
+      letter-spacing: .07em; text-transform: uppercase;
+      padding: 2px 8px; border-radius: 2px;
+    }
+    .status-andamento { background: #FFF3E0; color: #E65100; }
+    .status-concluida { background: #E8F5E9; color: #2E7D32; }
+    .status-encerrada { background: var(--cream-dark); color: var(--muted); }
+
+    .item-area {
+      font-size: 11px; color: var(--muted);
+      font-weight: 500; letter-spacing: .05em;
+    }
+    .item-date { font-size: 12px; color: var(--muted); }
+
+    .item-title {
+      font-family: var(--serif);
+      font-size: 20px; font-weight: 500;
+      line-height: 1.25;
+      margin-bottom: 8px;
+      transition: color .2s;
+    }
+    .item-abstract {
+      font-size: 13.5px; color: var(--muted);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    .item-keywords {
+      display: flex; gap: 6px; flex-wrap: wrap;
+    }
+    .keyword-chip {
+      font-size: 11px; color: var(--muted);
+      padding: 2px 9px;
+      border-radius: 2px;
+      background: #EFE7DD;
+      border: 1px solid #DED4C8;
+
+    }
+
+    .item-author {
+      display: flex; align-items: center; gap: 8px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+    .item-author-avatar {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .item-author-name { font-size: 13px; font-weight: 500; }
+    .item-author-inst { font-size: 12px; color: var(--muted); }
+    .item-author-sep {
+      font-size: 12px; color: var(--line); margin: 0 4px;
+    }
+
+    .item-aside {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 12px;
+      padding-top: 4px;
+      min-width: 120px;
+    }
+    .item-stats {
+      display: flex; flex-direction: column; gap: 6px;
+      align-items: flex-end;
+    }
+    .item-stat {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 12px; color: var(--muted);
+    }
+    .item-stat svg { width: 13px; height: 13px; }
+
+    .btn-support {
+      display: flex; align-items: center; gap: 7px;
+      padding: 8px 16px;
+      background: var(--orange);
+      color: var(--white);
+      font-size: 13px; font-weight: 500;
+      border-radius: 6px;
+      transition: background .2s;
+    }
+    .btn-support:hover { background: var(--orange-dim); }
+    .btn-support svg { width: 13px; height: 13px; }
+
+    /* Funding badge */
+    .funding-badge {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 11px; color: var(--orange);
+      font-weight: 500;
+    }
+    .funding-badge svg { width: 12px; height: 12px; }
+
+    /* ── PAGINATION ── */
+    .pagination {
+      display: flex; align-items: center;
+      justify-content: center;
+      gap: 4px;
+      margin-top: 48px;
+    }
+    .page-btn {
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 6px;
+      font-size: 13px; font-weight: 500;
+      color: var(--muted);
+      border: 1px solid transparent;
+      transition: background .15s, border-color .15s, color .15s;
+    }
+    .page-btn:hover { background: var(--cream-dark); color: var(--ink); }
+    .page-btn.active {
+      background: var(--orange);
+      color: var(--white);
+      border-color: var(--orange);
+    }
+    .page-btn.arrow { color: var(--muted); }
+    .page-btn.arrow:hover { color: var(--ink); }
+    .page-ellipsis { font-size: 13px; color: var(--muted); padding: 0 4px; }
+
+    /* ── AREAS CHIPS ── */
+    .areas-strip {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(
+          180deg,
+          #2B2622 0%,
+          #221D1A 100%
+        );
+        border: 1px solid rgba(255,255,255,.04);
+
+        border-radius: 18px;
+
+        padding: 26px 24px;
+
+        box-shadow:
+          0 10px 40px rgba(0,0,0,.10),
+          inset 0 1px 0 rgba(255,255,255,.03);
+    }
+    .area-chip {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      border: 1px solid var(--line);
+      background: linear-gradient(
+          180deg,
+          #2B2622 0%,
+          #221D1A 100%
+        );
+      color: var(--muted);
+      transition: border-color .15s, color .15s, background .15s;
+    }
+    .area-chip:hover {
+        border-color: var(--orange);
+        background:var(--cream-dark);
+        color:black;
+    }
+    .area-chip.active {
+      border-color: var(--orange);
+      color: var(--orange);
+      background: linear-gradient(
+          180deg,
+          #2B2622 0%,
+          #221D1A 100%
+        );
+    }
+    .area-chip-count { font-size: 11px; color: var(--line); }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    .research-item { animation: fadeIn .4s ease both; }
+    .research-item:nth-child(1) { animation-delay: .04s; }
+    .research-item:nth-child(2) { animation-delay: .08s; }
+    .research-item:nth-child(3) { animation-delay: .12s; }
+    .research-item:nth-child(4) { animation-delay: .16s; }
+    .research-item:nth-child(5) { animation-delay: .20s; }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="index.html" class="logo">
+          <div class="logo-mark"></div>
+          <span class="logo-name">Lumina</span>
+        </a>
+        <nav class="nav">
+          <ul class="nav-links">
+            <li><a href="pesquisa.html" class="active">Pesquisas</a></li>
+            <li><a href="quem-somos.html">Quem somos</a></li>
+            <li><a href="contato.html">Contato</a></li>
+          </ul>
+          
+          <div id="nav-auth-container" style="display: flex; gap: 12px; align-items: center;">
+            <button class="btn-nav btn-nav-ghost" onclick="window.location.href='login.html'">Entrar</button>
+            <button class="btn-nav btn-nav-fill" onclick="window.location.href='cadastro.html'">Cadastrar</button>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <div class="container">
+      <div class="page-header-inner">
+        <div>
+          <p class="page-eyebrow">Repositório científico</p>
+          <h1 class="page-title">Pesquisas &amp; Artigos</h1>
+          <p class="page-sub">Explore trabalhos científicos publicados por pesquisadoras de todo o Brasil.</p>
+        </div>
+        <span class="result-count"><strong>4.823</strong> publicações encontradas</span>
+      </div>
+
+      <div class="search-bar" style="max-width:680px; margin-bottom: 24px;">
+        <svg style="margin-left:14px;flex-shrink:0;color:var(--muted)" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="search-bar-input" type="text" placeholder="Buscar por título, autora ou palavra-chave…" />
+        <div class="search-bar-divider"></div>
+        <button class="search-bar-adv">Busca avançada</button>
+        <button class="search-bar-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Buscar
+        </button>
+      </div>
+
+      <div class="areas-strip">
+        <button class="area-chip active">Todas <span class="area-chip-count">4.823</span></button>
+        <button class="area-chip">Bioinformática <span class="area-chip-count">312</span></button>
+        <button class="area-chip">Microbiologia <span class="area-chip-count">248</span></button>
+        <button class="area-chip">Neurociência <span class="area-chip-count">195</span></button>
+        <button class="area-chip">Ecologia <span class="area-chip-count">180</span></button>
+        <button class="area-chip">Química <span class="area-chip-count">162</span></button>
+        <button class="area-chip">Física Médica <span class="area-chip-count">99</span></button>
+        <button class="area-chip">Biotecnologia <span class="area-chip-count">211</span></button>
+        <button class="area-chip">Farmácia <span class="area-chip-count">143</span></button>
+        <button class="area-chip">Ciências Sociais <span class="area-chip-count">137</span></button>
+        <button class="area-chip">Medicina <span class="area-chip-count">289</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="layout">
+
+      <aside class="sidebar">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <span style="font-size:13px;font-weight:500;">Filtros</span>
+          <button class="filter-clear">Limpar todos</button>
+        </div>
+
+        <div class="filter-block">
+          <div class="filter-title">Status da pesquisa</div>
+          <div class="filter-options">
+            <label class="filter-option">
+              <input type="checkbox" checked />
+              <label>Em andamento</label>
+              <span class="filter-count">1.204</span>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" checked />
+              <label>Concluída</label>
+              <span class="filter-count">3.019</span>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" />
+              <label>Encerrada</label>
+              <span class="filter-count">600</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="filter-block">
+          <div class="filter-title">Suporte financeiro</div>
+          <div class="filter-radio-group">
+            <label class="filter-radio">
+              <input type="radio" name="financ" checked />
+              <label>Todos</label>
+            </label>
+            <label class="filter-radio">
+              <input type="radio" name="financ" />
+              <label>Com meta de financiamento</label>
+            </label>
+            <label class="filter-radio">
+              <input type="radio" name="financ" />
+              <label>Sem financiamento</label>
+            </label>
+          </div>
+        </div>
+
+        <div class="filter-block">
+          <div class="filter-title">Data de publicação</div>
+          <div class="filter-options">
+            <label class="filter-option">
+              <input type="checkbox" checked />
+              <label>Último mês</label>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" />
+              <label>Últimos 6 meses</label>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" />
+              <label>Último ano</label>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" />
+              <label>Mais de 1 ano</label>
+            </label>
+          </div>
+        </div>
+
+        <div class="filter-block">
+          <div class="filter-title">Instituição</div>
+          <div class="filter-options">
+            <label class="filter-option">
+              <input type="checkbox" />
+              <label>USP</label>
+              <span class="filter-count">412</span>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" />
+              <label>UNICAMP</label>
+              <span class="filter-count">298</span>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" />
+              <label>UFRJ</label>
+              <span class="filter-count">253</span>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" />
+              <label>UFMG</label>
+              <span class="filter-count">187</span>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" />
+              <label>UnB</label>
+              <span class="filter-count">164</span>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" />
+              <label>UFAM</label>
+              <span class="filter-count">98</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="filter-block">
+          <div class="filter-title">Visualizações</div>
+          <div class="filter-range">
+            <input type="range" min="0" max="10000" value="5000" />
+            <div class="filter-range-labels">
+              <span>0</span>
+              <span>5.000+</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main>
+        <div class="results-header">
+          <div class="active-filters">
+            <span style="font-size:12px;color:var(--muted);">Filtros ativos:</span>
+            <div class="active-filter-chip">Em andamento <button>×</button></div>
+            <div class="active-filter-chip">Concluída <button>×</button></div>
+            <div class="active-filter-chip">Último mês <button>×</button></div>
+          </div>
+          <select class="sort-select">
+            <option>Ordenar: Relevância</option>
+            <option>Mais recentes</option>
+            <option>Mais visualizados</option>
+            <option>Mais apoiados</option>
+          </select>
+        </div>
+
+        <div class="research-list">
+
+          <article class="research-item" onclick="window.location.href='artigo.html'">
+            <div>
+              <div class="item-meta-top">
+                <span class="item-status status-andamento">Em andamento</span>
+                <span class="item-area">Bioinformática</span>
+                <span class="item-date">· 12 mai. 2025</span>
+              </div>
+              <h2 class="item-title">Análise transcriptômica diferencial em células tumorais de mama via RNA-Seq de terceira geração</h2>
+              <p class="item-abstract">Investigação dos perfis de expressão gênica em resposta a terapias-alvo em linhagens celulares MCF-7. Este estudo integra análise comparativa entre diferentes condições de tratamento e identifica vias de sinalização diferencialmente ativadas.</p>
+              <div class="item-keywords">
+                <span class="keyword-chip">RNA-Seq</span>
+                <span class="keyword-chip">câncer de mama</span>
+                <span class="keyword-chip">expressão gênica</span>
+                <span class="keyword-chip">MCF-7</span>
+              </div>
+              <div class="item-author">
+                <div class="item-author-avatar" style="background: linear-gradient(135deg,#C47B5A,#8B4A2F);border-radius:50%;width:26px;height:26px;flex-shrink:0;"></div>
+                <span class="item-author-name">Dra. Ana Costa</span>
+                <span class="item-author-sep">·</span>
+                <span class="item-author-inst">USP — Bioinformática</span>
+              </div>
+            </div>
+            <div class="item-aside">
+              <div class="item-stats">
+                <div class="item-stat">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  8.412 views
+                </div>
+                <div class="item-stat">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  34 comentários
+                </div>
+              </div>
+              <div class="funding-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Meta ativa
+              </div>
+              <button class="btn-support" onclick="window.location.href='artigo.html'; event.stopPropagation();">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Apoiar
+              </button>
+            </div>
+          </article>
+
+          <article class="research-item" onclick="window.location.href='artigo.html'">
+            <div>
+              <div class="item-meta-top">
+                <span class="item-status status-concluida">Concluída</span>
+                <span class="item-area">Microbiologia</span>
+                <span class="item-date">· 3 mai. 2025</span>
+              </div>
+              <h2 class="item-title">Diversidade do microbioma intestinal em populações amazônicas: caracterização metagenômica comparativa</h2>
+              <p class="item-abstract">Caracterização metagenômica comparativa entre comunidades indígenas e urbanas na região Norte. Os resultados indicam diferenças significativas na composição de filos bacterianos associadas a padrões alimentares tradicionais.</p>
+              <div class="item-keywords">
+                <span class="keyword-chip">Metagenômica</span>
+                <span class="keyword-chip">microbioma</span>
+                <span class="keyword-chip">Amazônia</span>
+                <span class="keyword-chip">populações indígenas</span>
+              </div>
+              <div class="item-author">
+                <div class="item-author-avatar" style="background: linear-gradient(135deg,#6B8E6B,#3A5A3A);border-radius:50%;width:26px;height:26px;flex-shrink:0;"></div>
+                <span class="item-author-name">Dra. Mariana Souza</span>
+                <span class="item-author-sep">·</span>
+                <span class="item-author-inst">UFAM — Microbiologia</span>
+              </div>
+            </div>
+            <div class="item-aside">
+              <div class="item-stats">
+                <div class="item-stat">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  5.230 views
+                </div>
+                <div class="item-stat">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  19 comentários
+                </div>
+              </div>
+              <button class="btn-support" onclick="window.location.href='artigo.html'; event.stopPropagation();">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Apoiar
+              </button>
+            </div>
+          </article>
+
+          <article class="research-item" onclick="window.location.href='artigo.html'">
+            <div>
+              <div class="item-meta-top">
+                <span class="item-status status-andamento">Em andamento</span>
+                <span class="item-area">Neurociência</span>
+                <span class="item-date">· 28 abr. 2025</span>
+              </div>
+              <h2 class="item-title">Identificação de biomarcadores proteicos na doença de Alzheimer precoce por espectrometria de massas</h2>
+              <p class="item-abstract">Análise quantitativa por espectrometria de massas em amostras de líquor cefalorraquidiano de pacientes com comprometimento cognitivo leve. Busca por painel de proteínas com valor diagnóstico e prognóstico para Alzheimer.</p>
+              <div class="item-keywords">
+                <span class="keyword-chip">Proteômica</span>
+                <span class="keyword-chip">Alzheimer</span>
+                <span class="keyword-chip">biomarcadores</span>
+                <span class="keyword-chip">LCR</span>
+              </div>
+              <div class="item-author">
+                <div class="item-author-avatar" style="background: linear-gradient(135deg,#8B7BA0,#5A4A70);border-radius:50%;width:26px;height:26px;flex-shrink:0;"></div>
+                <span class="item-author-name">Dra. Fernanda Lima</span>
+                <span class="item-author-sep">·</span>
+                <span class="item-author-inst">UNICAMP — Neurociência</span>
+              </div>
+            </div>
+            <div class="item-aside">
+              <div class="item-stats">
+                <div class="item-stat">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  12.087 views
+                </div>
+                <div class="item-stat">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  57 comentários
+                </div>
+              </div>
+              <div class="funding-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Meta ativa
+              </div>
+              <button class="btn-support" onclick="window.location.href='artigo.html'; event.stopPropagation();">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Apoiar
+              </button>
+            </div>
+          </article>
+
+          <article class="research-item" onclick="window.location.href='artigo.html'">
+            <div>
+              <div class="item-meta-top">
+                <span class="item-status status-concluida">Concluída</span>
+                <span class="item-area">Ecologia</span>
+                <span class="item-date">· 15 abr. 2025</span>
+              </div>
+              <h2 class="item-title">Impacto das mudanças climáticas na fenologia de espécies endêmicas do Cerrado brasileiro</h2>
+              <p class="item-abstract">Modelagem preditiva baseada em dados de longo prazo coletados em áreas de conservação no Planalto Central. Análise de alterações fenológicas em resposta a variações climáticas registradas nos últimos 30 anos.</p>
+              <div class="item-keywords">
+                <span class="keyword-chip">Cerrado</span>
+                <span class="keyword-chip">fenologia</span>
+                <span class="keyword-chip">mudanças climáticas</span>
+                <span class="keyword-chip">espécies endêmicas</span>
+              </div>
+              <div class="item-author">
+                <div class="item-author-avatar" style="background: linear-gradient(135deg,#7A9E6A,#4A6E3A);border-radius:50%;width:26px;height:26px;flex-shrink:0;"></div>
+                <span class="item-author-name">Dra. Beatriz Alves</span>
+                <span class="item-author-sep">·</span>
+                <span class="item-author-inst">UnB — Ecologia</span>
+              </div>
+            </div>
+            <div class="item-aside">
+              <div class="item-stats">
+                <div class="item-stat">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  6.930 views
+                </div>
+                <div class="item-stat">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  22 comentários
+                </div>
+              </div>
+              <button class="btn-support" onclick="window.location.href='artigo.html'; event.stopPropagation();">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Apoiar
+              </button>
+            </div>
+          </article>
+
+          <article class="research-item" onclick="window.location.href='artigo.html'">
+            <div>
+              <div class="item-meta-top">
+                <span class="item-status status-encerrada">Encerrada</span>
+                <span class="item-area">Química</span>
+                <span class="item-date">· 2 abr. 2025</span>
+              </div>
+              <h2 class="item-title">Síntese de nanopartículas de prata com atividade antimicrobiana por rotas de biossíntese verde</h2>
+              <p class="item-abstract">Avaliação de novas rotas de biossíntese utilizando extratos vegetais da flora brasileira como agentes redutores. Caracterização físico-química e testes de atividade antimicrobiana frente a patógenos resistentes.</p>
+              <div class="item-keywords">
+                <span class="keyword-chip">Nanopartículas</span>
+                <span class="keyword-chip">biossíntese verde</span>
+                <span class="keyword-chip">antimicrobiano</span>
+                <span class="keyword-chip">flora brasileira</span>
+              </div>
+              <div class="item-author">
+                <div class="item-author-avatar" style="background: linear-gradient(135deg,#A08060,#705030);border-radius:50%;width:26px;height:26px;flex-shrink:0;"></div>
+                <span class="item-author-name">Dra. Carla Moreira</span>
+                <span class="item-author-sep">·</span>
+                <span class="item-author-inst">UFMG — Química</span>
+              </div>
+            </div>
+            <div class="item-aside">
+              <div class="item-stats">
+                <div class="item-stat">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  3.180 views
+                </div>
+                <div class="item-stat">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  11 comentários
+                </div>
+              </div>
+              <button class="btn-support" style="background:var(--cream-dark);color:var(--muted);" onclick="window.location.href='artigo.html'; event.stopPropagation();">Ver artigo</button>
+            </div>
+          </article>
+
+        </div><div class="pagination">
+          <button class="page-btn arrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <span class="page-ellipsis">…</span>
+          <button class="page-btn">48</button>
+          <button class="page-btn arrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // Area chips toggle
+    document.querySelectorAll('.area-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.area-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+      });
+    });
+
+    // SCRIPT DO LOGIN CORINGA ATIVADO PARA FAZER O PERFIL APARECER AQUI TAMBÉM
+    const savedName = localStorage.getItem('lumina_userName');
+    if (savedName) {
+      const authContainer = document.getElementById('nav-auth-container');
+      const initials = savedName.substring(0, 2).toUpperCase();
+      
+      authContainer.innerHTML = `
+        <div class="user-profile" onclick="window.location.href='perfil.html'" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+          <div class="avatar" style="width: 36px; height: 36px; background: linear-gradient(135deg, #C47B5A, #8B4A2F); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 500; font-size: 13px;">${initials}</div>
+          <div style="display: flex; flex-direction: column; text-align: left;">
+            <span style="font-size: 13px; font-weight: 500; color: var(--ink); line-height: 1.2;">${savedName}</span>
+            <span style="font-size: 11px; color: var(--muted);">Pesquisadora</span>
+          </div>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

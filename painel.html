@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lumina — Meu Painel</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23E5501E'/><circle cx='16' cy='16' r='10' fill='none' stroke='%23FFFFFF' stroke-width='2'/></svg>" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --cream: #F7F3EE; --orange: #E5501E; --black: #181614; --ink: #2B2622; --muted: #7A7168; --line: #DDD7CF; --white: #FFFFFF; --serif: 'Cormorant Garamond', serif; --sans: 'DM Sans', sans-serif; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--sans); background: var(--cream); color: var(--ink); line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+    .site-header { position: sticky; top: 0; z-index: 100; background: rgba(247,243,238,.96); border-bottom: 1px solid var(--line); padding: 0 24px; }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; max-width: 1200px; margin: 0 auto; }
+    .logo { display: flex; align-items: center; gap: 10px; font-family: var(--serif); font-size: 22px; font-weight: 500; color: var(--black); }
+    .logo-mark { width: 30px; height: 30px; background: var(--orange); border-radius: 50%; position: relative; }
+    .logo-mark::after { content: ''; position: absolute; inset: 5px; border: 2px solid var(--white); border-radius: 50%; }
+    .nav { display: flex; gap: 24px; list-style: none; }
+    .nav a { font-size: 14px; font-weight: 500; color: var(--muted); }
+    .nav a.active { color: var(--ink); }
+    .header-actions { display: flex; align-items: center; gap: 16px; }
+    .user-profile { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .avatar { width: 36px; height: 36px; background: linear-gradient(135deg, #C47B5A, #8B4A2F); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 500; font-size: 14px; }
+    .dashboard-container { max-width: 1200px; margin: 48px auto; padding: 0 24px; }
+    .page-title { font-family: var(--serif); font-size: 36px; color: var(--black); margin-bottom: 32px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 48px; }
+    .stat-card { background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 24px; }
+    .stat-label { font-size: 13px; color: var(--muted); text-transform: uppercase; font-weight: 500; margin-bottom: 8px; }
+    .stat-value { font-family: var(--serif); font-size: 32px; color: var(--black); }
+    .panel-section { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 32px; }
+    .project-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; border: 1px solid var(--line); border-radius: 12px; cursor: pointer; }
+    .project-item:hover { border-color: var(--orange); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div style="display: flex; align-items: center; gap: 40px;">
+        <a href="index.html" class="logo"><div class="logo-mark"></div>Lumina</a>
+        <nav class="nav">
+          <li><a href="painel.html" class="active">Painel</a></li>
+          <li><a href="pesquisa.html">Pesquisas</a></li>
+        </nav>
+      </div>
+      <div class="header-actions">
+        <div class="user-profile" onclick="window.location.href='perfil.html'">
+          <div class="avatar" id="avatarInitials">AN</div>
+          <div style="display: flex; flex-direction: column;">
+            <span style="font-size: 13px; font-weight: 500; color: var(--ink);" id="headerName">Ana</span>
+            <span style="font-size: 11px; color: var(--muted);">Pesquisadora</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard-container">
+    <h1 class="page-title">Bem-vindo(a) de volta, <span id="welcomeName">Ana</span>.</h1>
+
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Total Arrecadado</div><div class="stat-value" style="color: var(--orange);">R$ 12.450</div></div>
+      <div class="stat-card"><div class="stat-label">Apoiadores</div><div class="stat-value">142</div></div>
+      <div class="stat-card"><div class="stat-label">Artigos Publicados</div><div class="stat-value">1</div></div>
+    </div>
+
+    <section class="panel-section">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
+        <h2 style="font-family: var(--serif); font-size: 24px;">Meus Artigos</h2>
+        <button style="background: var(--orange); color: white; padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer;">+ Novo Artigo</button>
+      </div>
+      <div class="project-item" onclick="window.location.href='artigo.html'">
+        <div>
+          <h3 style="font-size: 16px; font-weight: 500; margin-bottom: 4px;">Algoritmos de Otimização Aplicados à Alocação de Recursos</h3>
+          <span style="font-size: 13px; color: var(--muted);">Enviado em 12 mai. 2025 • 8.412 visualizações</span>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 12px; color: var(--muted);">Meta: R$ 20.000</div>
+          <div style="font-size: 16px; font-weight: 500;">62% Concluído</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Lê o nome do LocalStorage e altera na tela!
+    const savedName = localStorage.getItem('lumina_userName');
+    if (savedName) {
+      document.getElementById('headerName').innerText = savedName;
+      document.getElementById('welcomeName').innerText = savedName;
+      document.getElementById('avatarInitials').innerText = savedName.substring(0, 2).toUpperCase();
+    }
+  </script>
+</body>
+</html>
